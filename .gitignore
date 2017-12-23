@@ -54,6 +54,9 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+# Web storm
+.idea
+
 # dotenv environment variables file
 .env
 
