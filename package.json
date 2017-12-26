@@ -1,0 +1,19 @@
+{
+  "name": "civicsaid-graphql",
+  "version": "1.0.0",
+  "repository": "https://github.com/MrBoutte101/civicsaid-graphql.git",
+  "author": "Victor Boutte'",
+  "license": "MIT",
+  "dependencies": {
+    "graphql": "^0.12.3"
+  },
+  "engines": {
+    "node": "8",
+    "npm": "5"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  }
+}
