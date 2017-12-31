@@ -13,8 +13,8 @@ const AnswerModel = db.define('answer', {
   a_spanish: { type: Sequelize.STRING },
   a_chinese: { type: Sequelize.STRING },
   question_id: { type: Sequelize.INTEGER },
-  created_at: { type: Sequelize.DATE },
-  updated_at: { type: Sequelize.DATE },
+  // created_at: { type: Sequelize.DATE },
+  // updated_at: { type: Sequelize.DATE },
 });
 
 AnswerModel.belongsTo(QuestionModel);

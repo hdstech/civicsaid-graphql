@@ -3,8 +3,9 @@ const bodyParser = require('body-parser');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const { makeExecutableSchema } = require('graphql-tools');
 const { find, filter } = require('lodash');
-const Question = require('./db/models/question');
-const Answer = require('./db/models/answer');
+const Question = require('./db/models');
+// const Question = require('./db/models/question');
+// const Answer = require('./db/models/answer');
 
 const PORT = process.env.PORT || 3000;
 
@@ -55,11 +56,11 @@ const typeDefs = `
     # Question id
     id: Int!
     # English version of the question
-    question_english: String
+    q_english: String
     # Spanish version of the question
-    question_spanish: String
+    q_spanish: String
     # Chinese version of the question
-    question_chinese: String
+    q_chinese: String
     # Answers that belong to the question
     answers: [Answer]
     # Whether or not it's marked as favorite
@@ -69,11 +70,11 @@ const typeDefs = `
     # Answer id
     id: Int!
     # English version of the answer
-    answer_english: String
+    a_english: String
     # Spanish version of the answer
-    answer_spanish: String
+    a_spanish: String
     # Chinese version of the answer
-    answer_chinese: String
+    a_chinese: String
     # The question this answer belongs too
     question: Question
    }
@@ -88,7 +89,8 @@ const resolvers = {
     //   return Question.findAll();
     // },
     answers: () => answers,
-    question: (_, args) => find(questions, { id: args.id }),
+    // question: (_, args) => find(questions, { id: args.id }),
+    question: (_, args) => Question.find({ where: args }),
     answer: (_, args) => find(answers, { id: args.id }),
   },
   Question: {
