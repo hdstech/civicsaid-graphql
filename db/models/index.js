@@ -20,26 +20,32 @@ const QuestionModel = db.define(
   },
 );
 
-const AnswerModel = db.define('answer', {
-  id: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
+const AnswerModel = db.define(
+  'answer',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+    },
+    category: { type: Sequelize.STRING },
+    subcategory: { type: Sequelize.STRING },
+    a_english: { type: Sequelize.STRING },
+    a_spanish: { type: Sequelize.STRING },
+    a_chinese: { type: Sequelize.STRING },
+    question_id: { type: Sequelize.INTEGER },
   },
-  category: { type: Sequelize.STRING },
-  subcategory: { type: Sequelize.STRING },
-  a_english: { type: Sequelize.STRING },
-  a_spanish: { type: Sequelize.STRING },
-  a_chinese: { type: Sequelize.STRING },
-  question_id: { type: Sequelize.INTEGER },
-  created_at: { type: Sequelize.DATE },
-  updated_at: { type: Sequelize.DATE },
-});
+  {
+    timestamps: false,
+  },
+);
 
-// QuestionModel.hasMany(AnswerModel);
-// AnswerModel.belongsTo(QuestionModel);
+QuestionModel.hasMany(AnswerModel, { foreignKey: 'question_id' });
+AnswerModel.belongsTo(QuestionModel, { foreignKey: 'question_id' });
 
 const Question = db.models.question;
 const Answer = db.models.answer;
 
-module.exports = Question;
-module.exports = Answer;
+module.exports = {
+  Question,
+  Answer,
+};
