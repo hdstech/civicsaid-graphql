@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const { makeExecutableSchema } = require('graphql-tools');
 const { find, filter } = require('lodash');
+const Question = require('./db/models/question');
+const Answer = require('./db/models/answer');
 
 const PORT = process.env.PORT || 3000;
 
@@ -80,7 +82,11 @@ const typeDefs = `
 // The resolvers
 const resolvers = {
   Query: {
-    questions: () => questions,
+    // questions: () => questions,
+    questions: () => Question.findAll(),
+    // questions(_, args) {
+    //   return Question.findAll();
+    // },
     answers: () => answers,
     question: (_, args) => find(questions, { id: args.id }),
     answer: (_, args) => find(answers, { id: args.id }),
