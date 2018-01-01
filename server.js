@@ -14,6 +14,8 @@ const typeDefs = `
     answer(id: Int!): Answer
     questions: [Question]
     answers: [Answer]
+    category(category: String!): [Question]
+    subcategory(subcategory: String!): [Question]
    }
   type Question {
     # Question id
@@ -58,6 +60,18 @@ const resolvers = {
     answers: () => Answer.findAll(),
     question: (_, args) => Question.find({ where: args }),
     answer: (_, args) => Answer.find({ where: args }),
+    category: (_, args) =>
+      Question.findAll({
+        where: {
+          category: args.category,
+        },
+      }),
+    subcategory: (_, args) =>
+      Question.findAll({
+        where: {
+          subcategory: args.subcategory,
+        },
+      }),
   },
   Question: {
     answers: question => question.getAnswers(),
