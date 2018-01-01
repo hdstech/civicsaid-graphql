@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const { makeExecutableSchema } = require('graphql-tools');
-const { find, filter } = require('lodash');
+const { find, filter, sampleSize } = require('lodash');
 const { Question, Answer } = require('./db/models');
 
 const PORT = process.env.PORT || 3000;
@@ -16,6 +16,7 @@ const typeDefs = `
     answers: [Answer]
     category(category: String!): [Question]
     subcategory(subcategory: String!): [Question]
+    randomize(limit: Int!): [Question]
    }
   type Question {
     # Question id
@@ -72,6 +73,7 @@ const resolvers = {
           subcategory: args.subcategory,
         },
       }),
+    randomize: (_, args) => sampleSize(Question.findAll(), args.limit),
   },
   Question: {
     answers: question => question.getAnswers(),
@@ -98,5 +100,5 @@ app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
 // Start the server
 app.listen(PORT, () => {
-  console.log('Go to http://localhost:3000/graphiql to run queries!');
+  console.log(`Go to http://localhost:${PORT}/graphiql to run queries!`);
 });
