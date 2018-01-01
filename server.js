@@ -7,41 +7,6 @@ const { Question, Answer } = require('./db/models');
 
 const PORT = process.env.PORT || 3000;
 
-// Some fake data
-const questions = [
-  {
-    id: 6,
-    question_english: 'blah blah in english',
-    question_spanish: 'blah blah in spanish',
-    question_chinese: 'blah blah in chinese',
-    favorite: true,
-  },
-  {
-    id: 7,
-    question_english: 'zzzblah blah in english',
-    question_spanish: 'zzzblah blah in spanish',
-    question_chinese: 'zzzblah blah in chinese',
-    favorite: false,
-  },
-];
-
-const answers = [
-  {
-    id: 3,
-    question_id: 6,
-    answer_english: 'answer blah blah in english',
-    answer_spanish: 'answer blah blah in spanish',
-    answer_chinese: 'answer blah blah in chinese',
-  },
-  {
-    id: 4,
-    question_id: 6,
-    answer_english: 'answer zzzblah blah in english',
-    answer_spanish: 'answer zzzblah blah in spanish',
-    answer_chinese: 'answer zzzblah blah in chinese',
-  },
-];
-
 // The GraphQL schema in string form
 const typeDefs = `
   type Query {
@@ -53,6 +18,10 @@ const typeDefs = `
   type Question {
     # Question id
     id: Int!
+    # Category of the question
+    category: String
+    # Subcategory of the quesiton
+    subcategory: String
     # English version of the question
     q_english: String
     # Spanish version of the question
@@ -60,13 +29,17 @@ const typeDefs = `
     # Chinese version of the question
     q_chinese: String
     # Whether or not it's marked as favorite
-    favorite: Boolean
+    is_favorite: Boolean
     # Answers that belong to the question
     answers: [Answer]
    }
   type Answer {
     # Answer id
     id: Int!
+    # Category of the answer
+    category: String
+    # Subcategory of the answer
+    subcategory: String
     # English version of the answer
     a_english: String
     # Spanish version of the answer
@@ -82,13 +55,12 @@ const typeDefs = `
 const resolvers = {
   Query: {
     questions: () => Question.findAll(),
-    answers: (_, args) => Answer.findAll(),
+    answers: () => Answer.findAll(),
     question: (_, args) => Question.find({ where: args }),
     answer: (_, args) => Answer.find({ where: args }),
   },
   Question: {
-    answers: question => questions.getAnswers(),
-    // answers: question => filter(answers, { question_id: question.id }),
+    answers: question => question.getAnswers(),
   },
   Answer: {
     question: answer => answer.getQuestion(),
