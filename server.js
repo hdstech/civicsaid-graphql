@@ -16,7 +16,7 @@ const typeDefs = `
     answers: [Answer]
     category(category: String!): [Question]
     subcategory(subcategory: String!): [Question]
-    randomize(limit: Int!): [Question]
+    randomQuestion: Question
    }
   type Question {
     # Question id
@@ -73,7 +73,14 @@ const resolvers = {
           subcategory: args.subcategory,
         },
       }),
-    randomize: (_, args) => sampleSize(Question.findAll(), args.limit),
+    randomQuestion: () => {
+      const randomId = Math.floor(Math.random() * 100) + 1;
+      return Question.find({
+        where: {
+          id: randomId,
+        },
+      });
+    },
   },
   Question: {
     answers: question => question.getAnswers(),
