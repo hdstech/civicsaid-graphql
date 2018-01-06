@@ -1,11 +1,34 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const compression = require('compression');
+const { Engine } = require('apollo-engine');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const { makeExecutableSchema } = require('graphql-tools');
 const { find, filter, sampleSize } = require('lodash');
 const { Question, Answer } = require('./db/models');
+const { ENGINE_API_KEY } = require('dotenv/config');
 
 const PORT = process.env.PORT || 3000;
+
+// Apollo-engine configuration. Optional configuration commented out for now
+const engine = new Engine({
+  engineConfig: {
+    apiKey: process.env.ENGINE_API_KEY,
+    logging: {
+      level: 'DEBUG', // Engine Proxy logging level. DEBUG, INFO, WARN or ERROR
+    },
+  },
+  // GraphQL port
+  graphqlPort: PORT,
+
+  // GraphQL endpoint suffix - '/graphql' by default
+  endpoint: '/graphql',
+
+  // Debug configuration that logs traffic between Proxy and GraphQL server
+  dumpTraffic: true,
+});
+
+engine.start();
 
 // The GraphQL schema in string form
 const typeDefs = `
@@ -98,10 +121,24 @@ const schema = makeExecutableSchema({
 const app = express();
 
 // The GraphQL endpoint
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+app.use(
+  '/graphql',
+  bodyParser.json(),
+  graphqlExpress({
+    schema,
+    tracing: true,
+    cacheControl: true,
+  }),
+);
 
 // GraphiQL, a visual editor for queries
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+
+// Node compression to enable gzip compressions for tracing GraphQL queries
+app.use(compression());
+
+//
+app.use(engine.expressMiddleware());
 
 // Start the server
 app.listen(PORT, () => {
